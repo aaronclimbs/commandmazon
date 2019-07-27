@@ -1,0 +1,24 @@
+{
+  "name": "commandmazon",
+  "version": "1.0.0",
+  "description": "An Amazon-like storefront using MySQL and inquirer to provide a storefront interface through nodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brityank/commandmazon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brityank/commandmazon/issues"
+  },
+  "homepage": "https://github.com/brityank/commandmazon#readme",
+  "dependencies": {
+    "inquirer": "^6.5.0",
+    "mysql": "^2.17.1"
+  }
+}
