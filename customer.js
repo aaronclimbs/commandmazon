@@ -58,14 +58,15 @@ function purchase() {
       db.query("SELECT * FROM items WHERE ?", conditions, (err, item) => {
         // console.log(data);
         if (item[0].stock_quantity < answers.quantity) {
-          console.log("INSUFFICIENT QUANTITY! Please try again.");
+          console.log("INSUFFICIENT QUANTITY! Please try again later.");
           showChoices();
         } else {
           db.query(
             "UPDATE items SET ? WHERE ?",
             [
               {
-                stock_quantity: item[0].stock_quantity - answers.quantity
+                stock_quantity: item[0].stock_quantity - answers.quantity,
+                product_sales: item[0].product_sales + (item[0].product_price * answers.quantity)
               },
               conditions
             ],
