@@ -4,13 +4,10 @@ module.exports = function() {
   const seedDB = mysql.createConnection({
     host: "localhost",
 
-    // Your port; if not 3306
     port: 3306,
 
-    // Your username
     user: "root",
 
-    // Your password
     password: "password",
     database: "commandmazonDB"
   });
@@ -34,20 +31,20 @@ module.exports = function() {
   );
 
   const seedData = [
-    ["iPhone XS", "electronics", 800.0],
-    ["Macbook Pro 13-inch", "electronics", 1500.0],
-    ["Samsung Tablet", "electronics", 500.0],
-    ["Sofa", "furniture", 450.0],
-    ["Dresser", "furniture", 150.0],
-    ["Bed", "furniture", 700.0],
-    ["Hue Lightbulb", "household", 60.0],
-    ["Nest Thermostat", "household", 220.0],
-    ["Nest Camera", "household", 135.0],
-    ["Coffee Grounds", "groceries", 35.0]
+    ["iPhone XS", "electronics", 800.00, 12000],
+    ["Macbook Pro 13-inch", "electronics", 1500.00, 1000],
+    ["Samsung Tablet", "electronics", 500.00, 1500],
+    ["Sofa", "furniture", 450.00, 1500],
+    ["Dresser", "furniture", 150.00, 2500],
+    ["Bed", "furniture", 700.00, 3500],
+    ["Hue Lightbulb", "household", 60.00, 2600],
+    ["Nest Thermostat", "household", 220.00, 1800],
+    ["Nest Camera", "electronics", 135.00, 6500],
+    ["Coffee Grounds", "groceries", 35.00, 1500]
   ];
 
   seedDB.query(
-    "INSERT INTO items(product_name, department_name, product_price) VALUES ?",
+    "INSERT INTO items(product_name, department_name, product_price, product_sales) VALUES ?",
     [seedData],
     (err, data) => {
       if (err) throw new Error(`Error: ${err.message}`);
