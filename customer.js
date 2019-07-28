@@ -1,16 +1,14 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
+const cTable = require("console.table");
 
 const db = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "password",
   database: "commandmazonDB"
 });
@@ -21,21 +19,35 @@ db.connect(err => {
 });
 
 function showItems() {
-  db.query("SELECT item_id, product_name, product_price, stock_quantity FROM items", (err, data) => {
-    if (err) throw new Error(`Error: ${err.message}`);
-    console.log("<><><><><><> ITEMS AVAILABLE <><><><><><>");
-    // console.log(data);
-    data.forEach(item => {
+  db.query(
+    "SELECT item_id, product_name, product_price, stock_quantity FROM items",
+    async (err, data) => {
+      if (err) throw new Error(`Error: ${err.message}`);
+      const itemStr = await data
+        .map(item => {
+          return (
+            "ID: " +
+            item.item_id.toString().padEnd(3) +
+            "  ||  " +
+            "Product: " +
+            item.product_name.padEnd(20) +
+            "  ||  " +
+            (item.stock_quantity > 0
+              ? "Price: " + "$" + item.product_price.toFixed(2)
+              : "SOLD OUT")
+          );
+        })
+        .join("\n");
+      // console.log(itemStr.length, data.length, 2);
       console.log(
-        "ID: " +
-          item.item_id.toString().padEnd(2) +
-          "  ||   " +
-          "Product:".padEnd(12) +
-          item.product_name.padEnd(20) +
-          "  ||  " + (item.stock_quantity > 0 ? "Price:".padEnd(8) + "$" + item.product_price.toFixed(2) : "SOLD OUT") + "\n"
+        "<>".repeat(itemStr.length / data.length / 4) +
+          "ITEMS AVAILABLE" +
+          "<>".repeat(itemStr.length / data.length / 4)
       );
-    });
-  });
+      console.log(itemStr);
+      setTimeout(showChoices, 1000);
+    }
+  );
 }
 
 function purchase() {
@@ -59,19 +71,21 @@ function purchase() {
         // console.log(data);
         if (item[0].stock_quantity < answers.quantity) {
           console.log("INSUFFICIENT QUANTITY! Please try again later.");
-          showChoices();
+          setTimeout(showChoices, 1000);
         } else {
           db.query(
             "UPDATE items SET ? WHERE ?",
             [
               {
                 stock_quantity: item[0].stock_quantity - answers.quantity,
-                product_sales: item[0].product_sales + (item[0].product_price * answers.quantity)
+                product_sales:
+                  item[0].product_sales +
+                  item[0].product_price * answers.quantity
               },
               conditions
             ],
             (err, change) => {
-              console.log(change);
+              // console.log(change);
               console.log(
                 `You bought ${answers.quantity} of Product: ${
                   item[0].product_name
@@ -79,7 +93,7 @@ function purchase() {
                   parseInt(answers.quantity) * item[0].product_price
                 ).toFixed(2)}`
               );
-              showChoices();
+              setTimeout(showChoices, 1000);
             }
           );
         }
@@ -101,11 +115,10 @@ function showChoices() {
       if (answers.view === "View items") {
         showItems();
         console.log("\n");
-        setTimeout(purchase, 1000);
       } else if (answers.view === "Purchase an item") {
         purchase();
       } else {
-        console.log("Closing connection to database.")
+        console.log("Closing connection to database.");
         db.end();
       }
     });

@@ -1,16 +1,14 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
+const cTable = require("console.table");
 
 const db = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "password",
   database: "commandmazonDB"
 });
@@ -43,6 +41,7 @@ function choices() {
           break;
 
         default:
+          console.log("CLOSING DOWN DATABASE...")
           db.end();
           break;
       }
@@ -55,6 +54,7 @@ function viewProdsByDept() {
     (err, data) => {
       if (err) throw new Error(`Error: ${err.message}`);
       console.table(data);
+      setTimeout(choices, 1000);
     }
   );
 }

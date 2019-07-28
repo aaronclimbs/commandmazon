@@ -1,16 +1,14 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
+const cTable = require("console.table");
 
 const db = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "password",
   database: "commandmazonDB"
 });
@@ -54,7 +52,7 @@ function choices() {
           break;
 
         default:
-          console.log("SHUTTING DOWN DATABASE")
+          console.log("SHUTTING DOWN DATABASE");
           db.end();
           break;
       }
@@ -94,12 +92,9 @@ function addProduct() {
       }
     ])
     .then(answers => {
-      const newData = [[
-        answers.product,
-        answers.department,
-        answers.price,
-        answers.inventory
-      ]];
+      const newData = [
+        [answers.product, answers.department, answers.price, answers.inventory]
+      ];
       db.query(
         "INSERT INTO items(product_name, department_name, product_price, stock_quantity) VALUES ?",
         [newData],
